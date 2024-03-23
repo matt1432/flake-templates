@@ -3,6 +3,11 @@
 
   outputs = {self}: {
     templates = {
+      full = {
+        path = ./full;
+      };
+
+      default = self.templates.full;
     };
   };
 }
