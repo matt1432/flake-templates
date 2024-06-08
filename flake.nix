@@ -1,11 +1,9 @@
 {
   description = "My flake templates";
 
-  outputs = {self}: {
+  outputs = {self, ...}: {
     templates = {
-      full = {
-        path = ./full;
-      };
+      full.path = ./full;
 
       default = self.templates.full;
     };

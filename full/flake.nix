@@ -11,20 +11,30 @@
   outputs = {
     self,
     nixpkgs,
+    ...
   }: let
-    supportedSystems = ["x86_64-linux"];
+    supportedSystems = [
+      "x86_64-linux"
+      "x86_64-darwin"
+      "aarch64-linux"
+      "aarch64-darwin"
+    ];
 
     perSystem = attrs:
-      nixpkgs.lib.genAttrs supportedSystems (system: let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-        attrs system pkgs);
+      nixpkgs.lib.genAttrs supportedSystems (system:
+        attrs system nixpkgs.legacyPackages.${system});
   in {
     packages = perSystem (system: pkgs: {
-      default = pkgs.callPackage ./nix;
+      somePackage = pkgs.callPackage ./pkgs {};
+
+      default = self.packages.${system}.somePackage;
     });
 
-    nixosModules.default = import ./modules;
+    nixosModules = {
+      someModule = import ./modules;
+
+      default = self.nixosModules.someModule;
+    };
 
     formatter = perSystem (_: pkgs: pkgs.alejandra);
 
