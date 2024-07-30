@@ -22,23 +22,23 @@
 
     perSystem = attrs:
       nixpkgs.lib.genAttrs supportedSystems (system:
-        attrs system nixpkgs.legacyPackages.${system});
+        attrs (import nixpkgs {inherit system;}));
   in {
-    packages = perSystem (system: pkgs: {
+    packages = perSystem (pkgs: {
       somePackage = pkgs.callPackage ./pkgs {};
 
-      default = self.packages.${system}.somePackage;
+      default = self.packages.${pkgs.system}.somePackage;
     });
 
     nixosModules = {
-      someModule = import ./modules;
+      someModule = import ./modules self;
 
       default = self.nixosModules.someModule;
     };
 
-    formatter = perSystem (_: pkgs: pkgs.alejandra);
+    formatter = perSystem (pkgs: pkgs.alejandra);
 
-    devShells = perSystem (_: pkgs: {
+    devShells = perSystem (pkgs: {
       default = pkgs.mkShell {
         packages = with pkgs; [
           alejandra
