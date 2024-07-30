@@ -24,17 +24,17 @@
       nixpkgs.lib.genAttrs supportedSystems (system:
         attrs (import nixpkgs {inherit system;}));
   in {
-    packages = perSystem (pkgs: {
-      somePackage = pkgs.callPackage ./pkgs {};
-
-      default = self.packages.${pkgs.system}.somePackage;
-    });
-
     nixosModules = {
       someModule = import ./modules self;
 
       default = self.nixosModules.someModule;
     };
+
+    packages = perSystem (pkgs: {
+      somePackage = pkgs.callPackage ./pkgs {};
+
+      default = self.packages.${pkgs.system}.somePackage;
+    });
 
     formatter = perSystem (pkgs: pkgs.alejandra);
 
