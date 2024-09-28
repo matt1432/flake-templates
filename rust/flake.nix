@@ -7,6 +7,12 @@
       ref = "nixos-unstable";
     };
 
+    systems = {
+      type = "github";
+      owner = "nix-systems";
+      repo = "default-linux";
+    };
+
     rust-overlay = {
       type = "github";
       owner = "oxalica";
@@ -24,20 +30,14 @@
 
   outputs = {
     self,
+    systems,
     nixpkgs,
     rust-overlay,
     devshell,
     ...
   }: let
-    supportedSystems = [
-      "x86_64-linux"
-      "x86_64-darwin"
-      "aarch64-linux"
-      "aarch64-darwin"
-    ];
-
     perSystem = attrs:
-      nixpkgs.lib.genAttrs supportedSystems (system:
+      nixpkgs.lib.genAttrs (import systems) (system:
         attrs (import nixpkgs {
           inherit system;
           overlays = [
