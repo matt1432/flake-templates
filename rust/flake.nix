@@ -46,12 +46,6 @@
           ];
         }));
   in {
-    nixosModules = {
-      someModule = import ./nix/module.nix self;
-
-      default = self.nixosModules.someModule;
-    };
-
     packages = perSystem (pkgs: {
       somePackage = pkgs.callPackage ./nix/package.nix {
         rev = self.shortRev or "dirty";
@@ -67,6 +61,8 @@
     formatter = perSystem (pkgs: pkgs.alejandra);
 
     devShells = perSystem (pkgs: let
+      inherit (pkgs.lib) attrValues;
+
       mainPackage = self.packages.${pkgs.system}.default;
     in {
       default = pkgs.devshell.mkShell {
@@ -76,18 +72,22 @@
           "${devshell}/extra/language/c.nix"
           "${devshell}/extra/language/rust.nix"
         ];
-        language.c.libraries = with pkgs; [
-          # ...
-        ];
-        language.c.includes = with pkgs; [
-          # ...
-        ];
+
+        language.c = rec {
+          libraries = [
+            # ...
+          ];
+          includes = libraries;
+        };
 
         packages =
-          [
-            pkgs.pkg-config
-            pkgs.rust-analyzer
-          ]
+          (attrValues {
+            inherit
+              (pkgs)
+              pkg-config
+              rust-analyzer
+              ;
+          })
           ++ mainPackage.buildInputs;
       };
     });

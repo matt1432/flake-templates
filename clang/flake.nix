@@ -35,12 +35,6 @@
           overlays = [devshell.overlays.default];
         }));
   in {
-    nixosModules = {
-      someModule = import ./nix/module.nix self;
-
-      default = self.nixosModules.someModule;
-    };
-
     packages = perSystem (pkgs: {
       somePackage = pkgs.callPackage ./nix/package.nix {
         rev = self.shortRev or "dirty";
@@ -52,6 +46,8 @@
     formatter = perSystem (pkgs: pkgs.alejandra);
 
     devShells = perSystem (pkgs: let
+      inherit (pkgs.lib) attrValues;
+
       mainPackage = self.packages.${pkgs.system}.default;
     in {
       default = pkgs.devshell.mkShell {
@@ -59,23 +55,24 @@
 
         imports = ["${devshell}/extra/language/c.nix"];
 
-        language.c = {
-          compiler = pkgs.clangd;
+        language.c = rec {
+          compiler = pkgs.gcc14;
 
-          libraries = with pkgs; [
+          libraries = [
             # ...
           ];
-          includes = with pkgs; [
-            # ...
-          ];
+          includes = libraries;
         };
 
         packages =
-          [
-            pkgs.clang-tools
-            pkgs.gdb
-            pkgs.pkg-config
-          ]
+          (attrValues {
+            inherit
+              (pkgs)
+              clang-tools
+              gdb
+              pkg-config
+              ;
+          })
           ++ mainPackage.buildInputs;
       };
     });
