@@ -1,0 +1,32 @@
+BasedOnStyle: GNU
+
+ColumnLimit: 80
+
+IndentWidth: 4
+IndentCaseLabels: true
+
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveBitFields: Consecutive
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveMacros: Consecutive
+AlignConsecutiveShortCaseStatements:
+    Enabled: true
+    AcrossEmptyLines: true
+    AcrossComments: true
+    AlignCaseColons: false
+
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLoopsOnASingleLine: true
+
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+
+BreakBeforeBraces: Stroustrup
+SpaceBeforeParens: ControlStatements
+
+DerivePointerAlignment: false
+PointerAlignment: Right
+
+BinPackParameters: false

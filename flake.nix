@@ -5,6 +5,7 @@
     templates = {
       full.path = ./full;
       clang.path = ./clang;
+      cpp.path = ./cpp;
       rust.path = ./rust;
 
       default = self.templates.full;

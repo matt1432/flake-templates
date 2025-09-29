@@ -1,0 +1,12 @@
+# NixOS
+.direnv
+
+# clangd
+.cache
+compile_commands.json
+
+# Neovim
+.nvim.lua
+
+# Binaries
+*.o
